@@ -107,28 +107,4 @@ Transferring the files from VM to local and local to VM
 WinSCP
 
 Setting the hostname
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export PS1="[\u@\$(hostname -I | awk '{print \$1}') \W]\\$ "
