@@ -26,5 +26,6 @@ A comprehensive 35-day DevOps training program covering essential tools and prac
 | **05 Jan 2026** | Linux – Part 1 | Linux Introduction & Architecture, VM setup, basic commands (`date`, `cal`, `pwd`, `whoami`) | ✅ Completed |
 | **06 Jan 2026** | Linux – Part 2 | File operations, directory management, `more`/`less`, line numbering | ✅ Completed |
 | **08 Jan 2026** | Linux – Part 3 | `sort`, `cp`, `mv`, `grep`, `vi` editor, file utilities | ✅ Completed |
+| **09 Jan 2026** | Linux – Part 4 | `sed`, `script`, file permissions, user permissions `chown`, `chmod`, `systemctl` networking commands, systemctl, file transfer, hostname | ✅ Completed |
 
 
