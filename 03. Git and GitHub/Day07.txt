@@ -1,0 +1,179 @@
+Module 2: Git and GitHub | Day 07 | 12-01-2025
+============================================================================================================
+Git Installation on Local
+https://git-scm.com/install/windows
+
+Git Installation on VMs
+Amazon Linux - sudo yum install git -y
+Ubuntu - sudo apt install git -y
+
+Configuration of Git
+git config --global user.name "Kastro"
+git config --global user.email "kastro@gmail.com"
+
+git config user.name
+git config user.email
+
+git config --list
+
+Note: All the commands in git will start with "git"
+
+Task: Find the command to see the commit history from commit 2 to commit 5
+Task: Find the command to see the differences between commit 2 to commit 5
+
+git log commands
+git blame
+
+GIT DIFF
+git diff is a command which shows changes between the different states of the repo
+
+
+Demo 1 - To see the changes b/w working tree and staging area
+
+Demo 2 - To see the changes b/w staging area and local repo aera
+
+Demo 3 - To see the changes b/w working tree and local repo area
+
+Changing the commit messages
+git commit --amend -m "fixed: small bug"
+
+git rebase -i --root
+
+  443 touch kastro.txt
+  444  ls
+  445  git status
+  446  git add kastro.txt
+  447  git status
+  448  git commit -m "created a text file" kastro.txt
+  449  git status
+  450  ls
+  451  ls
+  452  cat kastro.txt
+  453  vi kastro.txt
+  454  git status
+  455  git add kastro.txt
+  456  git status
+  457  git commit -m "added line 1" kastro.txt
+  458  git status
+  459  vi kastro.txt
+  460  git status
+  461  git add kastro.txt
+  462  git status
+  463  git commit -m "added line 2" kastro.txt
+  464  git status
+  465  git log
+  466  git log --oneline
+  467  git log --oneline -2
+  468  git log -2
+  469  git log -p -2
+  470  clear
+  471  git show
+  472  clear
+  473  git log --oneline
+  474  git show fb3b237
+  475  clear
+  476  git log --oneline
+  477  git shortlog
+  478  git log --stat
+  479  vi kastro.txt
+  480  cat kastro.txt
+  481  git status
+  482  git add kastro.txt
+  483  git status
+  484  git commit -m "added additional lines and removed a line"
+  485  git status
+  486  git shortlog
+  487  git log --stat
+  488  git log --pretty=oneline
+  489  git log --oneline
+  490  git log --oneline --autho="Kastro"
+  491  git log --oneline --author="Kastro"
+  492  git log --oneline --author="Kastro"
+  493  git log --pretty=format:"%h-%an, %ar:%s"
+  494  git blam kastro.txt
+  495  git blame kastro.txt
+  496  clear
+  497  git status
+  498  ls
+  499  touch kk.txt
+  500  git diff
+  501  git init
+  502  vi demo.txt
+  503  git add .
+  504  git status
+  505  git commit -m "Initial commit: added demo.txt with line 1"
+  506  git status
+  507  git log --oneline
+  508  clear
+  509  git status
+  510  vi demo.txt
+  511  git status
+  512  git diff
+  513  git add demo.txt
+  514  git status
+  515  git diff --staged
+  516  git diff --cached
+  517  git diff HEAD
+  518  vi demo.txt
+  519  git diff HEAD
+  520  git add .
+  521  git commit -m "added content"
+  522  git log --oneline
+  523  git diff 3f12abd..d105be1
+  524  clear
+  525  git log --oneline
+  526  mkdir git-change-demo
+  527  cd git-change-demo/
+  528  ls
+  529  git init
+  530  vi file1.txt
+  531  git add .
+  532  git commit -m "initial commit"
+  533  ls
+  534  cat file1.txt
+  535  vi featureA.txt
+  536  git add .
+  537  git commit -m "feat: add feature A"
+  538  ls
+  539  vi file1.txt
+  540  git add .
+  541  git commit -m "fix: small bug"
+  542  git log --oneline
+  543  git log --oneline --decorate
+  544  git log --oneline
+  545  git commit --amend -m "fixed: small bug"
+  546  git log --oneline
+  547  git reflog
+  548  git reset --hard HEAD@{1}
+  549  git reflog
+  550  git log --oneline
+  551  clear
+  552  git log --oneline
+  553  git rebase -i --root
+  554  git log --oneline
+  555  git add .
+  556  git commit -m "added"
+  557  git status
+  558  touch linux.py
+  559  git status
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
