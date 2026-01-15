@@ -34,3 +34,4 @@ A comprehensive 35-day DevOps training program covering essential tools and prac
 | **12 Jan 2026** | Git and GitHub_Part 1 | Introduction to VCS, Types, Installation of Git on Local and VM, Configuration, Git Workflow & Stages, `git commands`, `git log`, `git show`, git blame`, git diff`, Changing Commit Message | ✅ Completed |
 | **13 Jan 2026** | Git and GitHub_Part 2 | `git rebase`, `git checkout`, `git restore`, git stash`, `git reset`, `git revert` | ✅ Completed |
 | **15 Jan 2026** | Git and GitHub_Part 3 | `git restore`, `git branch`, `git clone`, git pull`, `git push`, `visibility of repo` | ✅ Completed |
+| **16 Jan 2026** | Git and GitHub_Part 4 |  | Pending |
