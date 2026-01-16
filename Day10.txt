@@ -1,0 +1,42 @@
+Module 2: Git and GitHub | Day 10 | 16-01-2025
+============================================================================================================
+=> Branches
+
+=> .gitignore
+If you want git to ignore the files from tracking, we will use .gitignore
+To ignore the files, we need to create a hidden directory with name as ".gitignore"
+Inside the .gitignore, we will provide all the file names which needs to be ignored by the git from tracking
+
+=> Rename a branch (in local and also in remote)
+
+=> Deleting a branch (in local and also in remote)
+
+=> Branch Merging
+It is for local merging
+
+=> Pull Requests
+
+=> Merge Conflicts
+dev1	- branch1	- java code (code.txt)
+dev2	- branch2	- python code (code.txt)
+=> Resolving the merge conflicts
+
+=> Collaborators
+Collaborators has to be added to the GitHub repo, so that the developers working for the project can be able to push the code and raise pull requests.
+
+=> Branch Protection Rules
+
+=> Creating a Readme.md file
+
+=> Creating a profile for GitHub account
+	1. Create a repo with same name as your GitHub account name
+	2. Create Readme.md file
+	3. Write info about yourself
+
+=> Git Cherry-pick
+git cherry-pick copies one specific commit from another branch and applies it to the current branch
+
+=> Git Fetch 
+git clone ---> it will get the complete code from remote to local
+git pull ---> it will pull the changes from remote to local
+git fetch ---> it will get the commits
