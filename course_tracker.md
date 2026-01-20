@@ -40,9 +40,10 @@ A comprehensive 35-day DevOps training program covering essential tools and prac
 | Date | Module | Topics Covered | Status |
 |------|--------|----------------|--------|
 | **19 Jan 2026** | Maven & Tomcat | Introdution, Maven Features, Goals/Lifecycle, Standalone and Web Apps, Maven Repos, Tomcat Introduction, Downloading Tomcat, Understanding Tomcat Directory Structure  | ✅ Completed |
-| **20 Jan 2026** | Maven & Tomcat | Yet to discuss | ⏳ Pending |
+| **20 Jan 2026** | Maven & Tomcat | Yet to discuss | ✅ Completed |
 
 ### **Phase 4: Jenkins (Automation of Deployments)** 
 | Date | Module | Topics Covered | Status |
 |------|--------|----------------|--------|
-| **20 Jan 2026** | Yet to discuss  | ⏳ Pending |
+| **20 Jan 2026** | Jenkins | Introduction to CI&CD, Jenkins, Jobs and Types, Understanding Freestyle Projects - Job Creation, Configuration, Upstream & Downstream, Throttle Builds  | ✅ Completed |
+| **22 Jan 2026** | Jenkins | Yet to discuss | ⏳ Pending |
