@@ -1,0 +1,249 @@
+Module 5: Docker | Day 19 | 02-02-2026
+============================================================================================================
+=> Docker Installation;
+sudo dnf update -y
+sudo dnf install -y docker
+sudo systemctl enable --now docker.service
+sudo systemctl status docker.service
+docker -version
+
+=> Docker Compose Installation;
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+sudo curl -SL \
+https://github.com/docker/compose/releases/download/v2.29.2/docker-compose-linux-x86_64 \
+-o /usr/local/lib/docker/cli-plugins/docker-compose
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+docker compose version
+
+Types of Docker Images
+Base Images
+	These are the foundation images
+	Ex: ubuntu, amazon Linux, Debian, centos
+	These images are provided by the OS vendors	
+
+Child Images
+	These are the images which are built on top of base images
+	Ex: nginx, python, MySQL ...
+
+Official Language Runtime Images
+	These are the images which are maintained by the language communities
+	Ex: python, java, nodejs, golang
+
+Application Specific Images
+	Pre-built images for specific applications
+	Ex: nginx, redis, postgress, mysql
+
+Standard Images
+	These images contains full OS with package managers, build tools, documentations, libraries, binaries....	
+	The standard image sizes will be ranging b/w 300 MB - 3 GB+
+
+Understanding the importance of size of the Docker Images
+10 Microservices	----> 10 Docker Images	-----> 1 GB (each image size), 10 GB
+
+Understanding the types of base images;
+Standard Images;
+	Size: Large - 300 MB - 1 GB+
+	Contents: Full OS with package managers, build tools, documentations, libraries, binaries....
+	Use cases: development
+	Ex: python:3.9, ubuntu: 22.04, node:19
+
+Slim Images;
+	Size: Medium - 50MB - 200+ MB
+	Contents: Minimal OS, basic functionalities, no build tools
+	Use cases: production
+	Ex: python:3.9-slim, node:17-slim
+
+Alpine Images;
+	Size: Small - 5 MB - 50 MB+
+	Contents: alpine Linux, musl libc, apk
+
+Distroless Images;
+	Size: Very small size - 2 MB - 30 MB
+	Contents: Contains only the app run time, no shell, no package managers
+	Hard to debug
+	Created by Google (gcr)
+	Ex: gcr.io/distroless/python3.9, gcr.io/distroless/nodejs...
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Practical Comparison with Hello World Examples
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Let's create a simple Python Hello World application:
+
+app.py:
+#!/usr/bin/env python3
+from flask import Flask
+import os
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return f"Hello World! Running on {os.uname().sysname}"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
+
+requirements.txt:
+Flask==2.3.3
+
+cat Dockerfile.standard
+FROM python:3.11
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+EXPOSE 8080
+CMD ["python", "app.py"]
+
+[root@ip-172-31-1-156 base-images]# cat Dockerfile.slim
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+EXPOSE 8080
+CMD ["python", "app.py"]
+
+[root@ip-172-31-1-156 base-images]# cat Dockerfile.alpine
+FROM python:3.11-alpine
+WORKDIR /app
+RUN apk add --no-caches gcc musl-dev
+RUN pip install --no-cache-dir -r Flask==2.3.3
+COPY app.py .
+CMD ["python", "app.py"]
+
+
+Compare image sizes:
+docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" | grep py
+=====
+==> Multi Stage Docker Build
+Compiled Vs Interpreted Languages
+Source code is translated into machine (binary) code 
+Ex: Java, Go, C/C++...
+
+Source code is directly executed
+No separate build stage
+Ex: Python, NodeJS, PHP...
+
+When building docker images, instructions such as FROM, RUN, COPY, ADD create layers that increase the image size. Tools and dependencies used during the build process will increase the image size
+
+Layer-creating instructions
+FROM, RUN, COPY, ADD
+
+Non-layer-creating instructions
+CMD, ENTRYPOINT, WORKDIR, EXPOSE, LABEL, USER, VOLUME, ARG
+
+Combine multiple commands into a single RUN instruction using && to reduce the number of layers
+	RUN pip install flask && apt update && apt install maven -y
+
+Using Multi-stage dockerfile we can effectively reduce the image sizes
+Here we have 2 stages; BUILD, RUN
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Multi Stage Dockerfile for Go App
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vi main.go ----> Paste the below code;
+
+package main
+
+import (
+    "fmt"
+    "net/http"
+)
+
+func main() {
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, "Hello World from Go Web App!")
+    })
+
+    fmt.Println("Server running on port 8080")
+    http.ListenAndServe(":8080", nil)
+}
+
+---------------------------------------------------------------------------------------------------------------
+Project: MultiStageDockerBuild - Deploying NormalJava Application (war file)
+---------------------------------------------------------------------------------------------------------------
+https://github.com/KastroVKiran/Hotstar-App.git
+
+docker build -t myapp-image:v1 .
+docker run -d -p 8080:8080 --name myapp-container myapp-image:v1
+
+PUBLICIP:8080/myapp ----> 
+PUBLICIP:8080 ----> ROOT
+COPY --from=builder /app/target/myapp.war /usr/local/tomcat/webapps/myapp.war
+
+---------------------------------------------------------------------------------------------------------------
+Project: MultiStageDockerBuild - Deploying SpringBootJava Application (jar file)
+---------------------------------------------------------------------------------------------------------------
+https://github.com/KastroVKiran/SpringBootJavaApp-Docker.git
+
+Dockerfile;
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/chat-app-0.0.1-SNAPSHOT.jar app.jar
+
+# Create a directory for the sound file
+RUN mkdir -p /app/static/sounds
+
+EXPOSE 9999
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+Build the Docker image
+docker build -t chat-app .
+
+Run the container
+docker run -d -p 9999:9999 --name chatapp-container chat-app
+
+=====================
+Docker Portrainer
+=====================
+
+curl -L https://downloads.portainer.io/ce2-16/portainer-agent-stack.yml -o portainer-agent-stack.yml
+docker stack deploy -c portainer-agent-stack.yml portainer
+
+docker ps
+
+public-ip of swarm master:9443 OR public-ip of swarm master:9000
+public-ip of swarm master:9443 
+
+=======================
+Docker Networking
+=======================
+Docker networking is used to establish the communication between multiple containers that are running on same machine or on different docker machines
+
+docker network ls
+
+Types of Docker Networks;
+Bridge	- if 2 containers which are on SAME HOST MACHINE wants to communicate with eachother
+Host	- if you want to use HOST MACHINE NETWORK (VPC of EC2 instance) 
+None	- if you dont want to expose any application
+
+Overlay Network 	- if 2 containers which are on DIFFERENT HOST MACHINE wants to communicate with eachother
+Docker swarm uses overlay network
+
+Macvlan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
