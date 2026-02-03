@@ -56,10 +56,10 @@ A comprehensive 35-day DevOps training program covering essential tools and prac
 | **29 Jan 2026** | Docker | Dockerfile (Continuation), App Deployment, Docker Volumes | ✅ Completed |
 | **30 Jan 2026** | Docker | Docker Compose, App Deployment, Working with Dockerhub, Load Balancing with Docker | ✅ Completed |
 | **02 Feb 2026** | Docker | Multi Stage Dockerfile, Deploying various apps, Docker Networks, Docker Portrainer | ✅ Completed |
-| **03 Feb 2026** | Docker | .dockerignore, Final Project, Limitations of Dockerswarm, Kubernetes Introduction | ⏳ Pending |
+| **03 Feb 2026** | Docker | .dockerignore, Final Project, Limitations of Dockerswarm, Kubernetes Introduction | ✅ Completed |
 
 ### **Phase 6: Kubernetes (Managing the Containers)** 
 | Date | Module | Topics Covered | Status |
 |------|--------|----------------|--------|
+| **03 Feb 2026** | Kubernetes | Orchestration, Orchestration Platforms, K8s Intro, Cluster and its Components, K8s Architecture, Types of Clusters, Workloads, Methods of Creation of Resources, Structure of YAML File  | ✅ Completed |
 | **05 Feb 2026** | Kubernetes | Yet to discuss | ⏳ Pending |
-| **06 Feb 2026** | Kubernetes | Yet to discuss | ⏳ Pending |
