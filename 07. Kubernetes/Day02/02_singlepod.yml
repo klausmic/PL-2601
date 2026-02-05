@@ -1,0 +1,11 @@
+#creation of single container pod (apache)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: apache-pod
+spec:
+  containers:
+    - name: apache-container
+      image: httpd:2.4
+      ports:
+        - containerPort: 80

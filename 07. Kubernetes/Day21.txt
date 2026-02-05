@@ -1,0 +1,97 @@
+Module 6: Kubernetes | Day 21 | 05-02-2026
+============================================================================================================
+Docker Swarm Cluster	-----> Cluster contains Nodes	-----> Nodes contains Containers	-----> Containers contain Applications
+K8s Cluster		-----> Cluster contains Nodes		-----> Nodes contains Pods	-----> Pods contains Containers	-----> Containers contain Applications
+
+CRI	 / containerd
+CNI
+
+Creation of AWS EKS Cluster (Multi Node - Cloud Managed Cluster)
+----------------------------------------------------------------------------------------------
+=> Launch Ubuntu 24.04, t2.medium, 30 GB
+=> Connect to VM
+
+=> Connect to machine and install kubectl using below commands
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --short --client
+
+=> Install AWS CLI latest version using below commands
+sudo apt install unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+
+=> Install eksctl using below commands
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+=> Creation of Cluster
+eksctl create cluster --name kastro-cluster --region ap-south-1 --node-type t2.medium  --zones ap-south-1a,ap-south-1b
+
+The above commands uses some default values;
+It creates 2 worker nodes
+These 2 worker nodes will have 80 GB capacity
+These 2 worker nodes doesn't have the key-pair ----> You cannot connect with the worker nodes
+
+eksctl create cluster --name kastro-cluster --region us-east-1 --node-type t2.medium  --zones us-east-1a,us-east-1b,us-east-1c --nodes 10
+
+#To delete the cluster
+eksctl delete cluster --name kastro-cluster --region ap-south-1
+
+Basic Commands;
+aws eks list-clusters --region ap-south-1
+
+kubectl version --short
+Client Version	- kubectl version
+Server Version	- eks version
+
+kubectl get nodes/node
+kubectl get nodes -o wide
+
+kubectl get pods/pod/po
+
+kubectl cluster-info
+
+kubectl api-resources
+
+kubectl explain pod.spec
+kubectl explain pod.apiVersion
+
+kubectl config get-contexts
+kubectl config current-context
+
+===========
+PODS
+===========
+Pod is the smallest deployable unit in the Kubernetes
+Pods helps to run the containers
+
+A pod can have 1 container or more than 1 container
+Containers inside a pod will share storage, network and lifecycle
+
+Each pod will get its own IP address
+
+Lifecycle;
+Pending		-----> Running		-----> Container inside the pod is running	-----> Terminating/Error		-----> Terminated
+Once the pod is terminated, the pod IP address will also get deleted
+Pods are ephemeral
+
+Types of Pods;
+Single Container Pod
+	All the Kubernetes resources can communicate internally
+	CNI & CRI
+
+
+Multi Container Pod
+Init Container Pod
+Static Pod
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+#creation of single container pod (nginx)
+apiVersion: v1  #apiversion of pod
+kind: Pod #we are trying to create a pod
+metadata: #info about the pod
+  name: single-container-pod
+spec:
+  containers:
+    - name: nginx-container  # container name inside pod
+      image: nginx:latest
+      ports:
+        - containerPort: 80
