@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Namespace
+metadata: 
+  name: zomato
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: zomato-pod
+  namespace: zomato
+  labels:
+    app: zomato
+spec:
+  containers:
+    - name: zomato-container
+      image: kastrov/zomato
+      ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zomato-service
+  namespace: zomato
+spec:
+  type: LoadBalancer
+  selector:
+    app: zomato
+  ports:
+    - port: 80
+      targetPort: 3000

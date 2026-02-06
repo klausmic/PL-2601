@@ -1,0 +1,27 @@
+#pod manifest file
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx-app  #labels can be anything
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      ports:
+        - containerPort: 80
+---
+#service manifest file
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx-service  #service name
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-app
+  ports:
+    - protocol: TCP
+      port: 80 #service port  #optional
+      targetPort: 80 #container port

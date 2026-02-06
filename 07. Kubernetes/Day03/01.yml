@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: init-demo-pod
+spec:
+  restartPolicy: Always
+  initContainers:
+    - name: wait-init-container #init container name
+      image: busybox
+      command: ['sh', '-c', 'echo "Init Started"; sleep 10; echo "init Completed"']
+  containers:
+    - name: nginx-container
+      image: nginx
+      ports:
+        - containerPort: 80

@@ -1,0 +1,90 @@
+Module 6: Kubernetes | Day 22 | 06-02-2026
+============================================================================================================
+#To delete the cluster
+eksctl delete cluster --name kastro-cluster --region ap-south-1
+
+
+3. Init Containers
+These are special containers that run before the main app containers comes to the running state inside a pod
+If an init container fails, K8s restarts it until it succeeds 
+exit code 0
+
+4. Static Pods
+Static Containers are managed by kubelet
+DaemonSet is the advanced concept of managing the pods on all worker nodes
+
+/etc/kubernetes/manifests ----> If you keep any manifest file, automatically based on the configurations available in the manifest file the pods will get created
+
+You cannot create static pods on EKS worker nodes, because while working with EKS Cluster, EKS will maintain all the workloads
+Static pods can be created when working with self managed clusters
+
+=> Pod Restart Policy;
+It defines what K8s should do when a container inside the pod terminates/exits
+
+Always	(default)
+OnFailure	- restarts only if the container exits
+Never		- never restart the containers
+
+=> K8s Services
+Services are used to expose the application running inside a pod to the end users
+pod manifest file	---- contains pod information
+service manifest file ---- contains info about how to expose your app
+
+Types of Services;
+ClusterIP	(default)
+NodePort
+LoadBalancer
+ExternalName (domain mapping)
+
+How a service will identify the pods?
+A service will identify the pods by using pod labels
+In the pod manifest file we will write "labels" under metadata
+
+selector is used in the service manifest file to go and select the pods with specific labels
+
+ClusterIP is used to access the app within the cluster
+
+2. NodePort
+NodePort is a service type that exposes our application to be accessible externally on a static port number on all the nodes in the cluster
+static port number range is 30000-32767
+It is not mandatory to provide the node port number in the service manifest file. By default, if node port number is given, k8s will allot any random port number with in the above specified range
+Open the port in the SG of worker node
+PublicIP:NodePort
+
+3. Load Balancer
+K8s will integrate with cloud service provider's load balancer
+
+3 types of load balancers;
+App LB
+Network LB
+Gateway LB
+Classic LB	- default load balancer
+
+Note: Using Ingress Controller we can decide what type of load balancer we need
+
+DNS of LB ---> Lengthy URL	---> Access App
+
+=> Namespace
+Logical isolation of different resources for different teams/apps running the cluster
+
+types of NS;
+default				- default - all the resources will get created in the "default" ns
+kube-system			- Kubernetes system components - all the cluster related info will run inside this
+kube-public			- user info will be there
+kube-node-lease		- node heartbeat info
+
+RBAC - Roll Based Access Control
+
+Note: When you delete a namespace, all the resources running inside that namespace will get deleted automatically
+
+
+
+
+
+
+
+
+
+
+
+
