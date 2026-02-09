@@ -1,0 +1,356 @@
+Module 6: Kubernetes | Day 23 | 09-02-2026
+============================================================================================================
+#To delete the cluster
+eksctl delete cluster --name kastro-cluster --region ap-south-1
+
+
+=> K8s Controllers
+To provide HA for our applications, we will use K8s Controllers concept.
+K8s will always maintain the required number of pods for our application.
+replicas ----> Desired state: 5	-----> Maintain: 5 ----> reconciliation
+
+Types of K8s Controllers;
+ReplicationController
+ReplicaSet
+Deployment
+DaemonSet
+StatefulSet
+
+ReplicationController;
+A RC ensures that a specified number of pod replicas are running at any given time
+If a pod fails (deleted), the RC will create a new pod(s) in the place of the failed (deleted) pod(s)
+
+replicas: 5
+
+Limitations;
+Limited label matching
+We dont have rolling updates
+Legacy - deprecated 
+
+ReplicaSet;
+It is the advanced version of RC
+A RS ensures that a specified number of pod replicas are running at any given time
+We can scale up and scale down the pod using RS as well
+
+RC supports equality based selector
+RS supports set based selector
+
+RC:
+selector:
+	app: zomato-app
+
+RS:
+selector:
+	matchLabels:
+		app: zomato-app
+		version: v1.1
+		env: prod
+
+Limitations;
+We dont have rolling updates
+
+Deployment;
+A deployment maintains the required number of pods
+A deployment can handle the rolling updates
+Rollback to previous version of the same app is possible with deployments
+Scaling of pods is possible 
+
+v1
+v2 - currently deployed --- after 30 days, some feature is not working
+v3
+
+Deployment Strategies;
+Rolling Update				- default
+Recreate
+Blue-Green Deployment
+Canary Deployment
+
+Version 1: ZOMATO
+Version 2: SWIGGY
+
+Blue-Green Deployment;
+Blue Version		- old version
+Green Version	- new version
+
+We can switch the traffic whenever we need to whichever version of the application
+
+💡Blue-Green Deployment 
+✔ Blue Version (Stable — V1)
+deployment-blue.yaml
+
+# 🔵 Blue Deployment (Version 1 - Stable Release)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: blue
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - |
+            echo '<html><body style="background-color:skyblue;">
+            <h1>YouTube/LearnWithKASTRO</h1>
+            <h2>This is BLUE (Version 1)</h2>
+            </body></html>' > /usr/share/nginx/html/index.html && nginx -g "daemon off;"
+
+✔ Green Version (New Release — V2)
+deployment-green.yaml
+
+# 🟢 Green Deployment (Version 2 - New Release)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-green
+spec:
+  replicas: 3 # fully available but not serving traffic yet
+  selector:
+    matchLabels:
+      app: nginx
+      version: green
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: green
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - |
+            echo '<html><body style="background-color:lightgreen;">
+            <h1>www.learnwithkastro.com</h1>
+            <h2>This is GREEN (Version 2)</h2>
+            </body></html>' > /usr/share/nginx/html/index.html && nginx -g "daemon off;"
+
+✔ LoadBalancer Service (Initially points to BLUE)
+service-bluegreen.yaml
+
+# 🌐 LoadBalancer Service
+# Initially routes ONLY to the BLUE version (v1)
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+    version: blue   # ← Switch this later to "green" for release
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+🔄 Switch From BLUE → GREEN (Release!)
+📌 Modify the service selector to route traffic only to Green
+kubectl patch svc nginx-lb -p '{"spec":{"selector":{"app":"nginx","version":"green"}}}'
+
+🚫 Rollback if Something Goes Wrong
+Switch back to Blue anytime:
+kubectl patch svc nginx-lb -p '{"spec":{"selector":{"app":"nginx","version":"blue"}}}'
+
+
+💡Canary Deployment 
+In Blue-Green, the traffic is immediately routed to the new version of the app
+In Canary deployment, we can decide how much % of traffic should go to version1 and how much % of traffic should go to version2
+
+
+
+1️⃣ Deployment - Version 1 (Blue Page)
+📌 deployment-v1.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-v1
+spec:
+  replicas: 4 # 100% traffic initial
+  selector:
+    matchLabels:
+      app: nginx
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: v1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - |
+            echo '<html><body style="background-color:blue;">
+            <h1 style="color:white;">THIS IS VERSION 1</h1>
+            </body></html>' > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+
+2️⃣ Deployment - Version 2 (Green Page)
+📌 deployment-v2.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-v2
+spec:
+  replicas: 1 # Start with 25% traffic
+  selector:
+    matchLabels:
+      app: nginx
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: v2
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        command: ["/bin/sh"]
+        args:
+          - "-c"
+          - |
+            echo '<html><body style="background-color:green;">
+            <h1 style="color:white;">THIS IS VERSION 2 (CANARY)</h1>
+            </body></html>' > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'
+
+3️⃣ LoadBalancer Service
+📌 service-lb.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx # matches both v1 + v2
+  ports:
+  - port: 80
+    targetPort: 80
+
+
+DaemonSet
+DaemonSet will maintain 1 pod on each worker node
+We dont deploy the apps using DaemonSet
+
+📂 SCENARIO 1: Simple DaemonSet (Zomato on all nodes)
+🧾🧱 vi zomato-daemonset.yml ---->
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: zomato-daemon
+  labels:
+    app: zomato
+spec:
+  selector:
+    matchLabels:
+      name: zomato
+  template:
+    metadata:
+      labels:
+        name: zomato
+    spec:
+      containers:
+        - name: zomato-container
+          image: kastrov/zomato
+          ports:
+            - containerPort: 3000
+
+kubectl create -f zomato-daemonset.yml
+kubectl get ds                         # View DaemonSet
+kubectl get pods -o wide               # See pods on each node
+kubectl describe ds zomato-daemon     # Detailed info
+
+Each node will now have 1 Zomato pod.
+
+
+
+Namespace + Deployment Demo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+📄 YAML (Namespace + Deployments Example)
+1️⃣ Create the Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: swiggy
+
+kubectl apply -f namespace.yaml
+
+2️⃣ Deploy the App in swiggy Namespace
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swiggy-app
+  namespace: swiggy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: swiggy-app
+  template:
+    metadata:
+      labels:
+        app: swiggy-app
+    spec:
+      containers:
+      - name: swiggy-container
+        image: kastrov/swiggy
+        ports:
+        - containerPort: 3000
+
+3️⃣ Expose the App as a Service (NodePort)
+apiVersion: v1
+kind: Service
+metadata:
+  name: swiggy-service
+  namespace: swiggy
+spec:
+  selector:
+    app: swiggy-app
+  ports:
+  - protocol: TCP
+    port: 80          # service port (inside cluster)
+    targetPort: 3000  # container port inside the pod
+    nodePort: 30000   # external port on worker node (must be between 30000–32767)
+  type: NodePort
+
+4️⃣ Verify
+# List all namespaces
+kubectl get namespaces
+
+# List deployments in swiggy namespace
+kubectl get deployments -n swiggy
+
+# List pods in swiggy namespace
+kubectl get pods -n swiggy
+
+# List services in swiggy namespace
+kubectl get svc -n swiggy
