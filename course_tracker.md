@@ -75,7 +75,7 @@ A comprehensive 35-day DevOps training program covering essential tools and prac
 |------|--------|----------------|--------|
 | **16 Feb 2026** | Ansible | Ansible Introduction | ✅ Completed |
 | **17 Feb 2026** | Ansible | Setting up Ansible Master & Workers, Working with Ansible: Adhoc Commands, Modules, Playbooks | ✅ Completed |
-| **18 Feb 2026** | Ansible | Yet to Discuss | ⏳ Pending |
+| **18 Feb 2026** | Ansible | Ansible Concepts | ✅ Completed |
 | **19 Feb 2026** | Ansible | Yet to Discuss | ⏳ Pending |
 
 ### **Phase 8: Terraform (Infrastructure Automation)** 
