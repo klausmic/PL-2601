@@ -1,0 +1,122 @@
+Module 8: Terraform | Day 32 | 23-02-2026
+============================================================================================================
+Terraform installation
+sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo dnf -y install terraform
+terraform --version
+
+=> Terraform Variables
+Variables are something which are required to store values
+To avoid hardcoding of the values we will use variables
+variables block
+a = kastro
+b = kiran
+c = devops
+
+Types/Categories of variables;
+Input variables	- these variables allow you to pass values into the terraform configurations. These are defined inside the variables block
+Output variables	- these variables are used to print the values from the terraform configurations. These are defined inside the output block
+Local variables	- these variables are used to assign values to an expression
+
+we will call variables by using var.<name>
+
+=> Types of variables;
+string	- a sequence of text characters
+number	- any numeric values (integers, decimals)
+bool	- a true/false
+list		- an ordered collection of values of the same type
+map	- key-value pairs
+set		- unique values
+....
+
+=> Default variable
+default sets an initial value for a variable
+If default is present, you dont have to provide a value while running terraform commands
+If you dont set the default, terraform will ask you for the value during the runtime
+
+variable "region" {
+	type = string
+	default = "us-east-1"
+}
+
+We can write the variables and its values in the main.tf file itself
+variables.tf	----> we will declare the variables
+.tfvars		----> we will declare values for the variables
+
+1. length (list) - prints the number of elements in a list
+2. concat - combine multiple lists into a single list
+3. element - from the list of variables, i want to print specific element
+4. zipmap - creates a map from a list of keys and a list of values
+				prints the output in the alphabetical order
+					Task 1: print the output in reverse alphabetical order
+					Task 2: print the output as it is we have written
+5. lookup - retrieves the value associated with a specific key in a map
+6. join - joins the elements of a list into a single string using the specified separator 
+7. set - to print the unique values
+
+main.tf			- resource info
+variables.tf		- we will define variables and its values
+outputs.tf		- print the required outputs of the resource
+
+
+To create the resource using the custom values (i.e without using the default values), for this we have two options;
+	1. specific the value at the run time
+	2. use a separate file which is terraform.tfvars
+
+Create S3 Bucket using the below files;
+main.tf
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+resource "aws_s3_bucket" "bucket" {
+  bucket = var.bucket_name
+}
+
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+variables.tf
+variable "aws_region" {
+  description = "AWS region for resources"
+  type        = string
+}
+
+variable "bucket_name" {
+  description = "S3 bucket name"
+  type        = string
+}
+
+terraform.tfvars
+aws_region  = "ap-south-1"
+bucket_name = "kastro-terraform-bucket-2302206"
+
+outputs.tf
+output "bucket_name" {
+  description = "Created S3 bucket name"
+  value       = aws_s3_bucket.bucket.bucket
+}
+
+output "bucket_arn" {
+  description = "ARN of the S3 bucket"
+  value       = aws_s3_bucket.bucket.arn
+}
+
+
+
+
+
