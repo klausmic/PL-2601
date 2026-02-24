@@ -1,0 +1,89 @@
+Module 8: Terraform | Day 33 | 24-02-2026
+============================================================================================================
+Terraform installation
+sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+sudo dnf -y install terraform
+terraform --version
+
+EC2 instances
+	variables.tf	- declare the variables
+	main.tf		- declare the resource info
+	outputs.tf	- declare the outputs
+	.tfvars		- declare the values for the variables
+		dev-team.tfvars
+		test-team.tfvars
+		prod-team.tfvars
+
+
+dev		(t2.micro, 3)
+test		(t2.medium, 2)
+prod	(t2.large, 1)
+
+
+=> Creation of VPC
+region - ap-south-1
+1 VPC - kastro-vpc
+2 subnets - kastro-public (public subnet), kastro-private (private subnet)
+2 route tables - kastro-public-rt, kastro-private-rt
+1 internet gateway - kastro-igw
+public subnet connect to IGW via public route table
+
+CIDR - Classless Inter Domain Range - how many IPs you need for the network
+
+Creation of VPC
+https://chatgpt.com/share/699d0f73-a590-8002-be00-0ec02d5f9714
+
+Creation of VPC and Launching an Instance in that VPC
+https://chatgpt.com/share/699d0f73-a590-8002-be00-0ec02d5f9714
+
+=>Terraform Taint - it is used to recreate a specific resource in the existing infra.
+To make terraform understand to recreate the resource, we need to mark the resource as tainted
+
+EC2 Instance
+S3 bucket
+
+=> Terraform Workspaces
+
+terraform workspace list
+terraform workspace new <workspace-name>
+terraform workspace show
+terraform workspace select <workspace-name>
+terraform workspace delete <workspace-name>
+
+=> Creation of EC2 instance with EBS Volume
+https://chatgpt.com/share/699d0f73-a590-8002-be00-0ec02d5f9714
+
+=> Storing the state file in remote location
+in S3 bucket
+
+Task: export the state file from local to remote (s3 bucket)
+
+=> Terraform drift
+It happens when the real infra in AWS becomes different from what is defined in your terraform code or state file
+
+=> Multi region resource creation
+
+=> prevent_destroy
+we will write a "lifecycle" block - true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
